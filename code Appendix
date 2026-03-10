@@ -1,0 +1,52 @@
+APPENDIX:
+libname exam "C:\Users\smukherjee3\Downloads\final";
+proc import out = salesdata
+datafile = "C:\Users\smukherjee3\Downloads\final\salesdata.csv" dbms = csv replace;
+getnames = yes; datarow = 2; run;
+*printing 1st 10 observations;
+proc print data= salesdata (obs=20);
+run;
+*viewing the dataset structure and initial observations; proc contents data= salesdata;
+run;
+*creating summarys statistics;
+proc means data= salesdata maxdec=3;
+run;
+*print regression results results to review impact of price on sales and omarketing variables;
+proc reg data= salesdata plots=none outest =linreg_adv; model sales = price;
+run;quit;
+proc print data = linreg_adv;
+run;
+
+
+proc reg data= salesdata plots=none; model sales = price;
+model sales = price internetadvt;
+ 
+model sales = price printadvt; model sales = price radioadvt;
+*model sales = price printadvt radioadvt;
+*model sales = price printadvt radioadv internetadvt;
+*model sales = price printadvt radioadv internetadvt week;
+run;quit;
+*automated model selection;
+proc reg data = salesdata plots=none outest=linreg_advert;
+model sales = price printadvt radioadvt internetadvt week / selection=rsquare b best=1;
+run;
+
+
+proc print data=linreg_advert;
+run;
+*Calculating mean values for elasticity analysis;
+proc means data = salesdata mean;
+var sales price printadvt radioadvt internetadvt week; output out=means_all_v mean= /autoname;
+run;
+
+
+proc print data = means_all_v;
+run;
+*merge regression estimates and mean values for elasticity calculations;
+data elasticity;
+merge linreg_adv(drop=_TYPE_) means_all_v(drop=_TYPE_);
+E_P_price = price * (price_Mean / sales_Mean);
+run;
+ 
+proc print data=elasticity;
+run;
