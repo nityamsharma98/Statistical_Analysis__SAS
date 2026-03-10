@@ -1,7 +1,7 @@
 APPENDIX:
-libname exam "C:\Users\smukherjee3\Downloads\final";
+libname exam "C:\Users\nityamsharma98\Downloads\final";
 proc import out = salesdata
-datafile = "C:\Users\smukherjee3\Downloads\final\salesdata.csv" dbms = csv replace;
+datafile = "C:\Users\nityamsharma98\Downloads\final\salesdata.csv" dbms = csv replace;
 getnames = yes; datarow = 2; run;
 *printing 1st 10 observations;
 proc print data= salesdata (obs=20);
